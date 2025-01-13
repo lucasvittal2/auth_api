@@ -1,0 +1,4 @@
+/.pkg/
+/.venv/
+/auth-api-3.9/
+/.idea
