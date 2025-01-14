@@ -10,9 +10,9 @@ class MongoHandler:
             self.client = MongoClient(connection_string)
             self.db = self.client[database_name]
 
-        except PyMongoError as e:
-            logging.error(f"Failed to connect to MongoDB: {e}")
-            raise e
+        except PyMongoError as err:
+            logging.error(f"Failed to connect to MongoDB: {err}")
+            raise err
 
     def get_document(self, collection_name: str, filter_query: dict) -> dict:
         """Retrieve a document matching the filter query."""
@@ -20,11 +20,11 @@ class MongoHandler:
             collection = self.db[collection_name]
             document = collection.find_one(filter_query)
             return document
-        except Exception as e:
+        except Exception as err:
             logging.error(
-                f"Error retrieving document from '{collection_name}' collection: {e}"
+                f"Error retrieving document from '{collection_name}' collection: {err}"
             )
-            return {}
+            raise err
 
     def create(self, collection_name: str, document) -> str:
         """Insert a new document into the specified collection."""
@@ -32,11 +32,11 @@ class MongoHandler:
             collection = self.db[collection_name]
             result = collection.insert_one(document)
             return result.inserted_id
-        except Exception as e:
+        except Exception as err:
             logging.error(
-                f"Error creating document in collection '{collection_name}': {e}"
+                f"Error creating document in collection '{collection_name}': {err}"
             )
-            return "ERROR"
+            raise err
 
     def upsert(
         self, collection_name: str, filter_query: dict, update_data: dict
@@ -48,21 +48,35 @@ class MongoHandler:
                 filter_query, {"$set": update_data}, upsert=True
             )
             return result.upserted_id if result.upserted_id else "Updated"
-        except Exception as e:
+        except Exception as err:
             logging.error(
-                f"Error upserting document on '{collection_name}' collection: {e}"
+                f"Error upserting document on '{collection_name}' collection: {err}"
             )
-            return "ERROR"
+            raise err
 
-    def delete(self, collection_name: str, filter_query) -> str:
+    def delete(self, collection_name: str, filter_query) -> None:
         """Delete documents matching the filter query."""
         try:
             collection = self.db[collection_name]
-            result = collection.delete_one(filter_query)
-            return result.deleted_count
-        except Exception as e:
-            logging.error(f"Error deleting document: {e}")
-            return "ERROR"
+            collection.delete_one(filter_query)
+        except Exception as err:
+            logging.error(f"Error deleting document: {err}")
+            raise err
+
+    def create_collection_if_not_exist(self, collection_name: str) -> None:
+        try:
+            collections = [el["name"] for el in self.db.list_collections().to_list()]
+            if collection_name not in collections:
+                self.db.create_collection(collection_name)
+                logging.info(f"created collection '{collection_name}' !")
+            else:
+                logging.info(
+                    f"Collection '{collection_name}' already exists, not necessary create it again."
+                )
+
+        except Exception as err:
+            logging.error(f"Error deleting document: {err}")
+            raise err
 
 
 if __name__ == "__main__":
