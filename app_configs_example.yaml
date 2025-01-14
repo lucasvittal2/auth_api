@@ -1,0 +1,11 @@
+APP_NAME: "AUTH-API"
+TIME_ZONE: "<YOUR_TIME_ZONE>"
+AUTH_CONFIG:
+    secret_key: "<SECRET_KEY>"
+    expire_delta: <MINUTES> #minute
+    algorithm: "<ALGORITHM>"
+    encrypt_key: "<ENCRYPT_KEY>"
+
+AUTH_DB:
+  connection_string: "<CONNECTION_STRING>"
+  database_name: "auth-api"
