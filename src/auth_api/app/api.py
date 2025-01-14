@@ -2,7 +2,7 @@ import logging
 from datetime import datetime, timedelta
 
 import pytz
-import yaml
+import uvicorn
 from fastapi import FastAPI, status
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
@@ -13,14 +13,6 @@ from auth_api.databases.mongo import MongoHandler
 from auth_api.utils.file_handling import read_yaml
 
 # Instance objects globally used
-app = FastAPI()
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
 app_configs = read_yaml("app_configs.yaml")
 app_name = app_configs["APP_NAME"]
 time_zone = pytz.timezone(app_configs["TIME_ZONE"])
@@ -28,8 +20,6 @@ mongo = MongoHandler(**app_configs["AUTH_DB"])
 auth_config = AuthConfig(**app_configs["AUTH_CONFIG"])
 authenticator = Authenticator(auth_config)
 
-
-# logging setup
 # Logging setup
 
 for handler in logging.root.handlers[:]:
@@ -42,6 +32,18 @@ logging.basicConfig(
     datefmt="%Y-%m-%d %H:%M:%S",
     handlers=[logging.StreamHandler()],
 )
+
+
+# set app
+app = FastAPI()
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 
 # Define API Endpoints
 
@@ -69,7 +71,6 @@ def singup(body_request: RegisterRequest) -> JSONResponse:
         userid_used = mongo.get_document(
             body_request.app_name, filter_query={"user_id": body_request.user_id}
         )
-        print(userid_used)
 
         if userid_used:
             response = JSONResponse(
@@ -103,3 +104,14 @@ def singup(body_request: RegisterRequest) -> JSONResponse:
         )
 
     return response
+
+
+if __name__ == "__main__":
+    api_configs = app_configs["API_CONFIGS"]
+    uvicorn.run(
+        app,
+        log_level=api_configs["LOG_LEVEL"],
+        port=api_configs["PORT"],
+        log_config=app_configs["LOGGING_CONFIG"],
+        host=api_configs["HOST"],
+    )
