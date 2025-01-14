@@ -10,7 +10,7 @@ from fastapi.responses import JSONResponse
 from auth_api.app.authentication import Authenticator
 from auth_api.app.models import *
 from auth_api.databases.mongo import MongoHandler
-from auth_api.utils.read_files import read_yaml
+from auth_api.utils.file_handling import read_yaml
 
 # Instance objects globally used
 app = FastAPI()
