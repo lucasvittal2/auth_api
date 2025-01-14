@@ -26,7 +26,7 @@ class Authenticator:
             return token
         except Exception as err:
             logging.error(f"Error when try to create token: {err}")
-            return "ERROR"
+            raise err
 
     def validate_jwt_token(self, token_to_validate) -> Union[str, LoginPayload]:
         try:
@@ -70,7 +70,6 @@ if __name__ == "__main__":
     load_dotenv("../../../.env")
     brazil_timezone = pytz.timezone("America/Sao_Paulo")
     expire = datetime.now(tz=brazil_timezone) + timedelta(hours=1)
-    print()
 
     payload = RegisterPayload(
         user_id=777,
