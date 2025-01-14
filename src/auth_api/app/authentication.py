@@ -20,7 +20,6 @@ class Authenticator:
 
         try:
             jwt_payload = payload.model_dump()
-            print(jwt_payload)
             token = jwt.encode(jwt_payload, self.secret_key, algorithm=self.algorithm)
             logging.info("Created token succefully.")
             return token
