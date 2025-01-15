@@ -9,19 +9,20 @@ class AuthConfig(BaseModel):
     expire_delta: int
     algorithm: str
     encrypt_key: str
+    salt: bytes
 
 
 class RegisterPayload(BaseModel):
     app_name: str
     user_id: int
-    username: str
+    user_name: str
     password: str
     role: str
     expire: str
 
 
 class LoginPayload(BaseModel):
-    username: str
+    user_name: str
     password: str
     expire: datetime
 
@@ -30,6 +31,12 @@ class LoginPayload(BaseModel):
 class RegisterRequest(BaseModel):
     app_name: str
     user_id: int
-    username: str
+    user_name: str
     password: str
     role: str
+
+
+class LoginRequest(BaseModel):
+    app_name: str
+    user_name: str
+    password: str

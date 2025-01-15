@@ -5,6 +5,7 @@ from typing import Union
 import bcrypt
 import jwt
 import pytz
+from pytz import timezone
 
 from auth_api.app.models import AuthConfig, LoginPayload, RegisterPayload
 
@@ -15,11 +16,13 @@ class Authenticator:
         self.algorithm = configs.algorithm
         self.expire_delta = configs.expire_delta  # minutes
         self.encrypt_key = configs.encrypt_key
+        self.salt = configs.salt
 
     def create_jwt_token(self, payload: RegisterPayload) -> str:
 
         try:
             jwt_payload = payload.model_dump()
+            jwt_payload["password"] = self.hash_password(jwt_payload["password"])
             token = jwt.encode(jwt_payload, self.secret_key, algorithm=self.algorithm)
             logging.info("Created token succefully.")
             return token
@@ -27,25 +30,38 @@ class Authenticator:
             logging.error(f"Error when try to create token: {err}")
             raise err
 
-    def validate_jwt_token(self, token_to_validate) -> Union[str, LoginPayload]:
+    def validate_jwt_token(
+        self, token_to_validate, now: datetime, tz: timezone
+    ) -> Union[str, LoginPayload]:
         try:
-            decoded_payload = jwt.decode(
+            decoded = jwt.decode(
                 token_to_validate, self.secret_key, algorithms=[self.algorithm]
             )
-            logging.info("Token Validated with success.")
-        except jwt.ExpiredSignatureError:
-            logging.error("Token has expired. Please renew your credentials.")
-            decoded_payload = "TOKEN_EXPIRED"
+            print(decoded)
+            expire = datetime.strptime(decoded["expire"], "%Y-%m-%d %H:%M:%S").replace(
+                tzinfo=tz
+            )
+            now_norm = now.replace(tzinfo=tz)
+
+            print("Expire datetime: ", expire)
+            print("Now datetime: ", now)
+            if now_norm > expire:
+                status = "TOKEN_EXPIRED"
+                logging.error("Token is expired, please renew your credentials")
+            else:
+                status = "VALID_TOKEN"
+                logging.info("Token Validated with success.")
+
         except jwt.InvalidTokenError:
             logging.error("Invalid token. Access denied.")
-            decoded_payload = "INVALID_TOKEN"
+            status = "INVALID_TOKEN"
 
-        return decoded_payload
+        return status
 
     def hash_password(self, password: str) -> str:
         password_with_key = f"{password}{self.encrypt_key}"
-        salt = bcrypt.gensalt()
-        hashed_password = bcrypt.hashpw(password_with_key.encode("utf-8"), salt)
+
+        hashed_password = bcrypt.hashpw(password_with_key.encode("utf-8"), self.salt)
         return hashed_password.decode("utf-8")
 
     def verify_password(self, password: str, hashed_password: str) -> bool:
