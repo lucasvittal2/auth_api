@@ -21,6 +21,7 @@ class Authenticator:
     def create_jwt_token(self, payload: RegisterPayload) -> str:
 
         try:
+            logging.info("Creating JWT Token...")
             jwt_payload = payload.model_dump()
             jwt_payload["password"] = self.hash_password(jwt_payload["password"])
             token = jwt.encode(jwt_payload, self.secret_key, algorithm=self.algorithm)
@@ -34,17 +35,15 @@ class Authenticator:
         self, token_to_validate, now: datetime, tz: timezone
     ) -> Union[str, LoginPayload]:
         try:
+            logging.info("Validating token...")
             decoded = jwt.decode(
                 token_to_validate, self.secret_key, algorithms=[self.algorithm]
             )
-            print(decoded)
             expire = datetime.strptime(decoded["expire"], "%Y-%m-%d %H:%M:%S").replace(
                 tzinfo=tz
             )
             now_norm = now.replace(tzinfo=tz)
 
-            print("Expire datetime: ", expire)
-            print("Now datetime: ", now)
             if now_norm > expire:
                 status = "TOKEN_EXPIRED"
                 logging.error("Token is expired, please renew your credentials")
@@ -59,19 +58,22 @@ class Authenticator:
         return status
 
     def hash_password(self, password: str) -> str:
+        logging.info("Hashing password...")
         password_with_key = f"{password}{self.encrypt_key}"
 
         hashed_password = bcrypt.hashpw(password_with_key.encode("utf-8"), self.salt)
+        logging.info("Hashin password completed !")
         return hashed_password.decode("utf-8")
 
     def verify_password(self, password: str, hashed_password: str) -> bool:
 
         try:
-
+            logging.info("Verifying password...")
             password_with_key = f"{password}{self.encrypt_key}"
             return bcrypt.checkpw(
                 password_with_key.encode("utf-8"), hashed_password.encode("utf-8")
             )
+            logging.info("Verified password successfully")
         except Exception as err:
             logging.error(f"Error verifying password: {err}")
             raise Exception
