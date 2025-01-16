@@ -40,3 +40,10 @@ class LoginRequest(BaseModel):
     app_name: str
     user_name: str
     password: str
+
+
+class RenewCredentialsRequest(BaseModel):
+    app_name: str
+    user_name: str
+    old_password: str
+    new_password: str
