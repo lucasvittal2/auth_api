@@ -5,7 +5,7 @@ from auth_api.app.api import app
 from auth_api.app.authentication import Authenticator
 from auth_api.app.models import AuthConfig
 from auth_api.databases.mongo import MongoHandler
-from auth_api.utils.file_handling import read_yaml
+from auth_api.utils.tools import read_yaml
 
 
 @pytest.fixture

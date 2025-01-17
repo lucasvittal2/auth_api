@@ -1,6 +1,5 @@
 import logging
 from datetime import timedelta
-from typing import Dict
 
 import pytz
 import uvicorn
@@ -11,7 +10,7 @@ from fastapi.responses import JSONResponse
 from auth_api.app.authentication import Authenticator
 from auth_api.app.models import *
 from auth_api.databases.mongo import MongoHandler
-from auth_api.utils.file_handling import read_yaml
+from auth_api.utils.tools import delta_parse, read_yaml
 
 # Instance vars and objects globally used
 APP_CONFIGS = read_yaml("app_configs.yaml")
@@ -47,11 +46,6 @@ app.add_middleware(
 
 
 # Define API Endpoints
-
-
-def delta_parse(delta_str: str) -> Dict[str, int]:
-    days, hours, minutes, seconds = map(int, delta_str.split(":"))
-    return {"days": days, "hours": hours, "minutes": minutes, "seconds": seconds}
 
 
 @app.post("/auth-api/v1/signup")
