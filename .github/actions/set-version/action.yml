@@ -6,7 +6,7 @@ inputs:
   FILE_PATH:
     description: 'Path to the __init__.py file'
     required: true
-    default: 'src/bot_especialist/__init__.py'
+    default: 'src/auth_api/__init__.py'
 
 outputs:
   VERSION:
