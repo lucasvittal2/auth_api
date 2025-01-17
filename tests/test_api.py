@@ -5,6 +5,7 @@ from auth_api.app.api import auth_api
 from auth_api.app.authentication import Authenticator
 from auth_api.app.models import AuthConfig
 from auth_api.databases.mongo import MongoHandler
+from auth_api.utils.tools import read_yaml
 
 
 @pytest.fixture
@@ -16,14 +17,7 @@ def test_client():
 @pytest.fixture
 def auth_config():
     """Fixture for loading authentication config."""
-
-    AUTH_CONFIG = {
-        "secret_key": "3378FDC987546",
-        "expire_delta": 1,  # minute
-        "algorithm": "HS256",
-        "encrypt_key": "X3pXb2v41Yj2+FQrBK2JwCf9XedEp3E2yfHM/GXcEPnWYny9ylVNkJSFuGcXrKPv",
-        "salt": "$2b$12$lRL6DwCd4y4E.QLRcV8UO.",
-    }
+    AUTH_CONFIG = read_yaml("app_configs.yaml")["AUTH_CONFIG"]
     return AuthConfig(**AUTH_CONFIG)
 
 
