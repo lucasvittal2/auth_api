@@ -20,7 +20,7 @@ class MongoHandler:
             logging.info("getting a document...")
             collection = self.db[collection_name]
             document = collection.find_one(filter_query)
-            logging.info("Got the document.")
+            logging.info(f"Got the document: {document}")
             return document
         except Exception as err:
             logging.error(
@@ -60,7 +60,7 @@ class MongoHandler:
             )
             raise err
 
-    def delete(self, collection_name: str, filter_query) -> None:
+    def delete_document(self, collection_name: str, filter_query) -> None:
         """Delete documents matching the filter query."""
         try:
             collection = self.db[collection_name]
