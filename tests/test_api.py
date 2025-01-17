@@ -17,7 +17,14 @@ def test_client():
 @pytest.fixture
 def auth_config():
     """Fixture for loading authentication config."""
-    return AuthConfig(**read_yaml("app_configs.yaml")["AUTH_CONFIG"])
+    AUTH_CONFIG = {
+        "secret_key": "3378FDC987546",
+        "expire_delta": 1,  # minute
+        "algorithm": "HS256",
+        "encrypt_key": "X3pXb2v41Yj2+FQrBK2JwCf9XedEp3E2yfHM/GXcEPnWYny9ylVNkJSFuGcXrKPv",
+        "salt": "$2b$12$lRL6DwCd4y4E.QLRcV8UO.",
+    }
+    return AuthConfig(**AUTH_CONFIG)
 
 
 @pytest.fixture
@@ -217,8 +224,6 @@ def test_renew_credentials_success(test_client, mock_mongo_handler):
         "app-test", filter_query={"user_name": "usertest3"}
     )
     user_id = doc_old_state["user_id"]
-    print("$$$")
-    print(doc_old_state)
 
     response = test_client.post(
         "/auth-api/v1/renew-credentials",
