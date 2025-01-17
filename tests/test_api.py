@@ -1,7 +1,7 @@
 import pytest
 from fastapi.testclient import TestClient
 
-from auth_api.app.api import app
+from auth_api.app.api import auth_api
 from auth_api.app.authentication import Authenticator
 from auth_api.app.models import AuthConfig
 from auth_api.databases.mongo import MongoHandler
@@ -11,7 +11,7 @@ from auth_api.utils.tools import read_yaml
 @pytest.fixture
 def test_client():
     """Fixture for creating a test client."""
-    return TestClient(app)
+    return TestClient(auth_api)
 
 
 @pytest.fixture
