@@ -13,7 +13,7 @@ on:
 
 env:
   ENVIRONMENT: "dev"
-  VERSION_FILE: 'src/bot_especialist/__init__.py'
+  VERSION_FILE: 'src/auth_api/__init__.py'
   PYTHON_IMAGE: "python:3.9"
   DOCKER_IMAGE_TAG: "auth-api:v1"
   ARTIFACT_REGISTRY_URI: "us-central1-docker.pkg.dev"
