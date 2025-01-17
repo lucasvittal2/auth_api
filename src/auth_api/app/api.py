@@ -222,7 +222,7 @@ def renew_credentials(body_request: RenewCredentialsRequest) -> JSONResponse:
 if __name__ == "__main__":
     api_configs = APP_CONFIGS["API_CONFIGS"]
     uvicorn.run(
-        app,
+        auth_api,
         log_level=api_configs["LOG_LEVEL"],
         port=api_configs["PORT"],
         log_config=APP_CONFIGS["LOGGING_CONFIG"],
