@@ -35,8 +35,8 @@ logging.basicConfig(
 
 
 # set app
-app = FastAPI()
-app.add_middleware(
+auth_api = FastAPI()
+auth_api.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
     allow_credentials=True,
@@ -48,7 +48,7 @@ app.add_middleware(
 # Define API Endpoints
 
 
-@app.post("/auth-api/v1/signup")
+@auth_api.post("/auth-api/v1/signup")
 def singup(body_request: RegisterRequest) -> JSONResponse:
     try:
         mongo.create_collection_if_not_exist(body_request.app_name)
@@ -107,7 +107,7 @@ def singup(body_request: RegisterRequest) -> JSONResponse:
     return response
 
 
-@app.post("/auth-api/v1/login")
+@auth_api.post("/auth-api/v1/login")
 def login(body_request: LoginRequest) -> JSONResponse:
     try:
         hashed_password = authenticator.hash_password(body_request.password)
@@ -156,7 +156,7 @@ def login(body_request: LoginRequest) -> JSONResponse:
     return response
 
 
-@app.post("/auth-api/v1/renew-credentials")
+@auth_api.post("/auth-api/v1/renew-credentials")
 def renew_credentials(body_request: RenewCredentialsRequest) -> JSONResponse:
     try:
         hashed_old_password = authenticator.hash_password(body_request.old_password)
