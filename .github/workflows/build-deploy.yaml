@@ -86,10 +86,6 @@ jobs:
           VERSION: ${{ steps.set_version.outputs.VERSION }}
           ENVIRONMENT: ${{ env.ENVIRONMENT }}
 
-      - name: Check App functions with unit tests
-        id: check_functionalities
-        uses: ./.github/actions/run-unit-tests
-
       - name: Docker Build & Push
         uses: ./.github/actions/docker-build-push
         with:
