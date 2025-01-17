@@ -1,7 +1,6 @@
 import logging
-from datetime import datetime, timedelta
-from http.client import responses
-from typing import Dict, Tuple
+from datetime import timedelta
+from typing import Dict
 
 import pytz
 import uvicorn
@@ -128,7 +127,7 @@ def login(body_request: LoginRequest) -> JSONResponse:
             response = JSONResponse(
                 content={
                     "status": "USER_NOT_EXIST",
-                    "message": "User does not exist ! Try to signup.",
+                    "message": "User does not exist  or password is incorret! Try to signup.",
                 },
                 status_code=status.HTTP_403_FORBIDDEN,
             )
