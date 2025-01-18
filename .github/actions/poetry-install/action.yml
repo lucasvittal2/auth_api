@@ -22,6 +22,8 @@ runs:
       run: |
         curl -sSL https://install.python-poetry.org | python3.9 -
         echo "${HOME}/.local/bin" >> $GITHUB_PATH
+        alias python='/usr/bin/python3.9'
+        sudo chmod -R 777 /usr/local/lib/python3.9/
         poetry --version
         poetry config virtualenvs.create false
         poetry install --no-interaction --no-ansi --no-cache
