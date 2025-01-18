@@ -161,6 +161,13 @@ init: create-venv poetry-download poetry-install pre-commit-install gcloud-auth 
 	@printf "[Makefile] - mongoDB got started !\n"
 	@printf "[Makefile] - ***** Project setup complete *****\n"
 
+.PHONY: setup
+setup: create-venv poetry-download poetry-install activate-venv
+	@printf "[Makefile] - starting mongoDB locally...\n"
+	@sudo systemctl start mongod
+	@printf "[Makefile] - mongoDB got started !\n"
+	@printf "[Makefile] - ***** Project setup complete *****\n"
+
 #* Project setup
 .PHONY: refresh
 refresh: gcloud-auth activate-venv
