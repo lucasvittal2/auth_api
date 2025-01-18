@@ -24,6 +24,7 @@ runs:
         echo "${HOME}/.local/bin" >> $GITHUB_PATH
         poetry config virtualenvs.create true
         poetry install --no-interaction --no-ansi --no-cache
+        poetry add pytest
         VENV_PATH=$(poetry env info --path)
         echo "Setup completed successfully! Virtual environment is activated."
 
