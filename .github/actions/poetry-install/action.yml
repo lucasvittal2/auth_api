@@ -24,6 +24,6 @@ runs:
         echo "${HOME}/.local/bin" >> $GITHUB_PATH
         poetry --version
         poetry config virtualenvs.create false
-        poetry install --no-interaction --no-ansi --no-cache
+        poetry install --no-interaction --no-ansi --no-cache --break-system-packages
 
       shell: bash
