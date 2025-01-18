@@ -22,6 +22,8 @@ runs:
       run: |
         curl -sSL https://install.python-poetry.org | python3.9 -
         echo "${HOME}/.local/bin" >> $GITHUB_PATH
+        python -m venv test-env
+        source test-env/bin/activate
         poetry config virtualenvs.create true
         poetry install --no-interaction --no-ansi --no-cache
         poetry add pytest
