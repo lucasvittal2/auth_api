@@ -12,6 +12,7 @@ runs:
       run: |
         echo "Running all Unit tests..."
         echo
+        pip uninstall jwt -y
         source auth-api-3.9/bin/activate
         pytest -v tests/
         echo
