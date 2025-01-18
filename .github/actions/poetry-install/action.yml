@@ -25,7 +25,7 @@ runs:
         poetry --version
         poetry config virtualenvs.create false
         poetry install --no-interaction --no-ansi
-        poetry remove jwt
+        pip uninstall jwt
         rm -rf /.local/lib/Python3.9/site-packages/jwt
 
       shell: bash
