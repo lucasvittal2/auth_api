@@ -20,10 +20,12 @@ runs:
 
     - name: Install dependencies
       run: |
-        rm -rf  ${HOME}/.local/bin
         curl -sSL https://install.python-poetry.org | python3.9 -
         echo "${HOME}/.local/bin" >> $GITHUB_PATH
         poetry --version
         poetry config virtualenvs.create false
         poetry install --no-interaction --no-ansi
+        poetry remove jwt
+        rm -rf /.local/lib/Python3.9/site-packages/jwt
+
       shell: bash
