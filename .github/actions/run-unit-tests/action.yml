@@ -13,7 +13,6 @@ runs:
 
         echo "Running all Unit tests..."
         echo
-        source auth-api-3.9/bin/activate
         pytest -v tests/
         echo
         echo "All unit test were run."
