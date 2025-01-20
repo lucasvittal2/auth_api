@@ -237,3 +237,6 @@ def test_renew_credentials_success(test_client, mock_mongo_handler):
     mock_mongo_handler.upsert(
         "app-test", filter_query={"user_name": "usertest3"}, update_data=doc_old_state
     )
+
+
+print("TEst")
