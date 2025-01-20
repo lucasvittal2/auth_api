@@ -1,0 +1,98 @@
+name: Composer Sync & Docker Build-Deploy on Dev
+
+
+on:
+  pull_request:
+    branches:
+      - dev
+    types:
+      - opened
+      - synchronize
+      - reopened
+      - ready_for_review
+
+env:
+  ENVIRONMENT: "dev"
+  VERSION_FILE: 'src/auth_api/__init__.py'
+  PYTHON_IMAGE: "python:3.9.21"
+  DOCKER_IMAGE_TAG: "auth-api:v1"
+  ARTIFACT_REGISTRY_URI: "us-central1-docker.pkg.dev"
+
+jobs:
+  environment-sync:
+    runs-on: self-hosted
+    environment: dev
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref }}
+          fetch-depth: 0
+
+      - name: Set Package Version
+        id: set_version
+        uses: ./.github/actions/set-version
+        with:
+          FILE_PATH: ${{ env.VERSION_FILE }}
+
+      - name: Gcloud Auth
+        uses: google-github-actions/auth@v2
+        with:
+          credentials_json: ${{ secrets.GCP_CREDENTIALS }}
+          export_environment_variables: true
+
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v2
+
+      - name: Set Workflow Variables
+        uses: ./.github/actions/set-env-vars
+        with:
+          VERSION: ${{ steps.set_version.outputs.VERSION }}
+          ENVIRONMENT: ${{ env.ENVIRONMENT }}
+
+  docker-build:
+    needs: environment-sync
+    runs-on: self-hosted
+    environment: dev
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref }}
+          fetch-depth: 0
+
+      - name: Set Package Version
+        id: set_version
+        uses: ./.github/actions/set-version
+        with:
+          FILE_PATH: ${{ env.VERSION_FILE }}
+
+      - name: Install dependencies
+        id: poetry_install
+        uses: ./.github/actions/poetry-install
+
+      - name: Gcloud Auth
+        uses: google-github-actions/auth@v2
+        with:
+          credentials_json: ${{ secrets.GCP_CREDENTIALS }}
+          export_environment_variables: true
+
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v2
+
+      - name: Set Workflow Variables
+        uses: ./.github/actions/set-env-vars
+        with:
+          VERSION: ${{ steps.set_version.outputs.VERSION }}
+          ENVIRONMENT: ${{ env.ENVIRONMENT }}
+
+      - name: Check App functions with unit tests
+        id: check_functionalities
+        uses: ./.github/actions/run-unit-tests
+
+      - name: Docker Build & Push
+        uses: ./.github/actions/docker-build-push
+        with:
+          PYTHON_IMAGE: "python3.9"
+          DOCKER_IMAGE_TAG: ${{env.DOCKER_IMAGE_TAG}}
+          ARTIFACT_REGISTRY_URI: ${{env.ARTIFACT_REGISTRY_URI}}

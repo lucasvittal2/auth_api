@@ -1,7 +1,7 @@
 import pytest
 from fastapi.testclient import TestClient
 
-from auth_api.app.api import app
+from auth_api.app.api import auth_api
 from auth_api.app.authentication import Authenticator
 from auth_api.app.models import AuthConfig
 from auth_api.databases.mongo import MongoHandler
@@ -11,13 +11,14 @@ from auth_api.utils.tools import read_yaml
 @pytest.fixture
 def test_client():
     """Fixture for creating a test client."""
-    return TestClient(app)
+    return TestClient(auth_api)
 
 
 @pytest.fixture
 def auth_config():
     """Fixture for loading authentication config."""
-    return AuthConfig(**read_yaml("app_configs.yaml")["AUTH_CONFIG"])
+    AUTH_CONFIG = read_yaml("app_configs.yaml")["AUTH_CONFIG"]
+    return AuthConfig(**AUTH_CONFIG)
 
 
 @pytest.fixture
@@ -217,8 +218,6 @@ def test_renew_credentials_success(test_client, mock_mongo_handler):
         "app-test", filter_query={"user_name": "usertest3"}
     )
     user_id = doc_old_state["user_id"]
-    print("$$$")
-    print(doc_old_state)
 
     response = test_client.post(
         "/auth-api/v1/renew-credentials",

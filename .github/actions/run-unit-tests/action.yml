@@ -1,0 +1,21 @@
+---
+name: Running Project Unit Tests
+description: Runs all project unit tests
+on:
+  pull_request:
+    branches:
+      - dev
+runs:
+  using: "composite"
+  steps:
+    - name: Run tests
+      run: |
+
+        echo "Running all Unit tests..."
+        echo
+        source test-env/bin/activate
+        pytest -v tests/
+        echo
+        echo "All unit test were run."
+
+      shell: bash

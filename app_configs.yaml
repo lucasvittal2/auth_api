@@ -1,0 +1,59 @@
+APP_NAME: "AUTH-API"
+
+TIME_ZONE: "America/Sao_Paulo"
+TIME_DELTA: "15:0:0:0" #days:hours:minutes:seconds
+AUTH_CONFIG:
+    secret_key: "3378FDC987546"
+    expire_delta: 1 #minute
+    algorithm: "HS256"
+    encrypt_key: "W5nDa0z39Xh0+DPhBH1JvBd8WedCq1C0zeGL/FWbDOkWXmx8zkTMhIRDtFaWrJNu"
+    salt: "$2b$12$lRN6DqCd2k4E.RQMzB4YW."
+
+AUTH_DB:
+  connection_string: "mongodb://localhost:27017/"
+  database_name: "auth-api"
+
+LOGGING_CONFIG:
+  version: 1
+  disable_existing_loggers: true
+  formatters:
+    standard:
+      format: '"%(asctime)s - [AUTH-API] - %(levelname)s:  %(message)s"'
+    custom_formatter:
+      format: "%(asctime)s - [AUTH-API] - %(levelname)s:  %(message)s"
+  handlers:
+    default:
+      formatter: standard
+      class: logging.StreamHandler
+      stream: ext://sys.stdout
+    stream_handler:
+      formatter: custom_formatter
+      class: logging.StreamHandler
+      stream: ext://sys.stdout
+
+  loggers:
+    uvicorn:
+      handlers:
+        - default
+      level: TRACE
+      propagate: false
+    uvicorn.access:
+      handlers:
+        - stream_handler
+      level: TRACE
+      propagate: false
+    uvicorn.error:
+      handlers:
+        - stream_handler
+      level: TRACE
+      propagate: false
+    uvicorn.asgi:
+      handlers:
+        - stream_handler
+      level: TRACE
+      propagate: false
+
+API_CONFIGS:
+  HOST: "0.0.0.0"
+  PORT: 8090
+  LOG_LEVEL: "debug"

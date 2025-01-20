@@ -1,0 +1,36 @@
+---
+name: Docker Build and Push
+description: Docker Build and Push to Artifact Registry
+
+inputs:
+  PYTHON_IMAGE:
+    description: "Python Docker Image"
+
+  DOCKER_IMAGE_TAG:
+    required: true
+    description: "The label used to reference the image"
+
+  ARTIFACT_REGISTRY_URI:
+    required: true
+    description: "The URI used to push  container on gcp"
+
+
+runs:
+  using: "composite"
+  steps:
+
+    - name: Log in to Artifact Registry
+      run: gcloud auth configure-docker us-central1-docker.pkg.dev
+      shell: bash
+
+    - name: Build and Push Docker Image
+      run: |
+        docker build \
+            --build-arg PYTHON_IMAGE=${PYTHON_IMAGE} \
+          -t ${ARTIFACT_REGISTRY_URI}/${DOCKER_IMAGE_TAG} .
+        docker push ${ARTIFACT_REGISTRY_URI}/${DOCKER_IMAGE_TAG}
+      shell: bash
+
+    - name: Docker System Prune
+      run: docker system prune -f
+      shell: bash

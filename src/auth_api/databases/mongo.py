@@ -20,7 +20,7 @@ class MongoHandler:
             logging.info("getting a document...")
             collection = self.db[collection_name]
             document = collection.find_one(filter_query)
-            logging.info(f"Got the document: {document}")
+            logging.info(f"Got the document.")
             return document
         except Exception as err:
             logging.error(
