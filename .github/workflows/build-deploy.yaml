@@ -14,7 +14,7 @@ on:
 env:
   ENVIRONMENT: "dev"
   VERSION_FILE: 'src/auth_api/__init__.py'
-  PYTHON_IMAGE: "python:3.9"
+  PYTHON_IMAGE: "python:3.9.21"
   DOCKER_IMAGE_TAG: "auth-api:v1"
   ARTIFACT_REGISTRY_URI: "us-central1-docker.pkg.dev"
 
