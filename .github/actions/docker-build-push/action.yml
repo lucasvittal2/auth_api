@@ -26,7 +26,7 @@ runs:
     - name: Build and Push Docker Image
       run: |
         docker build \
-            PYTHON_IMAGE=${PYTHON_IMAGE}
+            --build-arg PYTHON_IMAGE=${PYTHON_IMAGE}
           -t ${ARTIFACT_REGISTRY_URI}/${DOCKER_IMAGE_TAG} .
         docker push ${ARTIFACT_REGISTRY_URI}/${DOCKER_IMAGE_TAG}
       shell: bash
