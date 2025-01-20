@@ -15,19 +15,13 @@ runs:
   steps:
     - name: Set Workflow Variables
       run: |
-        COMPOSER_BUCKET="gs://auth_api-${ENVIRONMENT}"
-        LOCAL_DAGS_PATH="src/auth_api/dags"
-        ARTIFACT_REGISTRY_ENV="auth_api-${ENVIRONMENT}"
-        PULL_PROMPTS_PY="src.auth_api.promptsregistry.pull_prompts"
+        ARTIFACT_REGISTRY_ENV="bot-especialist-${ENVIRONMENT}"
         ARTIFACT_REGISTRY_URI="us-central1-docker.pkg.dev/${ARTIFACT_REGISTRY_ENV}/auth_api"
-        DOCKER_IMAGE_TAG="document-ingestion-pipelines:$VERSION-$ENVIRONMENT"
+        DOCKER_IMAGE_TAG="auth_api:$VERSION-$ENVIRONMENT"
         DOCKER_FILE_TAG="docker_version.txt"
 
         echo "ENVIRONMENT=${ENVIRONMENT}" >> $GITHUB_ENV
-        echo "COMPOSER_BUCKET=${COMPOSER_BUCKET}" >> $GITHUB_ENV
-        echo "LOCAL_DAGS_PATH=${LOCAL_DAGS_PATH}" >> $GITHUB_ENV
         echo "ARTIFACT_REGISTRY_ENV=${ARTIFACT_REGISTRY_ENV}" >> $GITHUB_ENV
-        echo "PULL_PROMPTS_PY=${PULL_PROMPTS_PY}" >> $GITHUB_ENV
         echo "DOCKER_IMAGE_TAG=${DOCKER_IMAGE_TAG}" >> $GITHUB_ENV
         echo "DOCKER_FILE_TAG=${DOCKER_FILE_TAG}" >> $GITHUB_ENV
         echo "ARTIFACT_REGISTRY_URI=${ARTIFACT_REGISTRY_URI}" >> $GITHUB_ENV
