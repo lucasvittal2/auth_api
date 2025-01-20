@@ -16,8 +16,8 @@ runs:
     - name: Set Workflow Variables
       run: |
         ARTIFACT_REGISTRY_ENV="bot-especialist-${ENVIRONMENT}"
-        ARTIFACT_REGISTRY_URI="us-central1-docker.pkg.dev/${ARTIFACT_REGISTRY_ENV}/auth_api"
-        DOCKER_IMAGE_TAG="auth_api:$VERSION-$ENVIRONMENT"
+        ARTIFACT_REGISTRY_URI="us-central1-docker.pkg.dev/${ARTIFACT_REGISTRY_ENV}/auth-api"
+        DOCKER_IMAGE_TAG="auth-api:$VERSION-$ENVIRONMENT"
         DOCKER_FILE_TAG="docker_version.txt"
 
         echo "ENVIRONMENT=${ENVIRONMENT}" >> $GITHUB_ENV
