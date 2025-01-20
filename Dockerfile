@@ -45,4 +45,4 @@ RUN python -c "import auth_api; print(auth_api.__file__)"
 
 EXPOSE 8090
 COPY app_configs.yaml ./
-CMD ["uvicorn", "auth_api.app.api:auth_api", "--host", "0.0.0.0", "--port", "8070"]
+CMD ["uvicorn", "auth_api.app.api:auth_api", "--host", "0.0.0.0", "--port", "8090"]
